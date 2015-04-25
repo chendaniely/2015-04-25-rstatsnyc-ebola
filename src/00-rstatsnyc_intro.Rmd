@@ -1,0 +1,72 @@
+---
+title: "Interactive Ebola Plots"
+author: "Daniel Chen"
+date: "April 15, 2015"
+output: ioslides_presentation
+---
+
+# Hello!
+
+## I'm Daniel
+
+  - Ph.D. candidate in [Genetics, Bioinformatics, and Computational Biology](http://gbcb.vbi.vt.edu/gbcb/about_program) at Virginia Tech
+  - Work in the [Social and Decison Analytics Lab](http://vbi.vt.edu/sdal/about) in the [Virginia Bioinformatics Institude](http://www.vbi.vt.edu/about)
+  - MPH in Epidemiology at [Mailman](http://www.mailman.columbia.edu/)
+  - [Software-Carpentry](http://software-carpentry.org/) Instructor
+  - [Lander Analytics](http://www.landeranalytics.com/)
+  - Predictive Health Analytics
+
+## Today
+1. [Knitr](http://yihui.name/knitr/) primer
+2. Basic [ebola](https://github.com/chendaniely/ebola/tree/dev-dan-shiny/data_products/shinyCountryTimeseries) plot
+3. Interactive Shiny [documents](http://rmarkdown.rstudio.com/authoring_shiny.html)
+4. Interactive Shiny [app](http://shiny.rstudio.com/)
+
+https://github.com/chendaniely/2015-04-25-rstatsnyc-ebola
+
+<img src="../images/vivian_auudience.png" style="height:200px;"/>
+
+## Ebola data
+https://github.com/cmrivers/ebola
+
+- countryTimeSeries
+
+# Knitr Demo
+
+# Ebola Data
+
+# Shiny
+
+# Conclusion
+
+## Additional Resources
+
+- http://shiny.rstudio.com/
+- http://shiny.rstudio.com/tutorial/
+- http://shiny.rstudio.com/articles/
+    - http://shiny.rstudio.com/articles/html-ui.html
+- http://shiny.rstudio.com/gallery/
+- http://rstudio.github.io/shinydashboard/
+
+## Shoutouts!
+My Data Science Instructors:
+
+- [Rachel Schutt](https://www.linkedin.com/in/rachelschutt)
+- [Kayur](http://kayur.org/) [Patel](https://twitter.com/foil)
+- [Jared](http://www.jaredlander.com/) [Lander](https://twitter.com/jaredlander)
+
+Data:
+
+- [Caitlin](http://www.caitlinrivers.com/) [Rivers](https://twitter.com/cmyeaton)
+
+SDAL: <img src="../images/sdal.png" style="height:80px;"/>
+
+Sallie Keller, Stephanie Shipp, Ana Aizcorbe, Dave Higdon, Mark Orr, Aaron Schroeder,
+Gizem Korkmaz, Kathryn Ziemer, Bianica Pires, Emily Molfino, Kimberly Lyman, Sakinah Calender
+
+## Parents
+
+## Thanks!
+
+[\@chendaniely](https://twitter.com/chendaniely)
+

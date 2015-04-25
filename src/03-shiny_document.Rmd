@@ -1,0 +1,227 @@
+---
+title: "Shiny Document"
+author: "Daniel Chen"
+date: "April 14, 2015"
+output: html_document
+runtime: shiny
+---
+```{r, echo=FALSE}
+library(knitr)
+library(ggplot2)
+library(RColorBrewer)
+opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+# this Rdata file was created from the 02-ebola.Rmd file
+# this is here so I don't have to have all the data cleaning steps again
+load('../data/ebola_data.Rdata')
+```
+
+<!-- Taken from the default rmarkdown shiny document text -->
+This R Markdown document is made interactive using Shiny. Unlike the more traditional workflow of creating static reports, you can now create documents that allow your readers to change the assumptions underlying your analysis and see the results immediately. 
+
+To learn more, see [Interactive Documents](http://rmarkdown.rstudio.com/authoring_shiny.html).
+
+# Inputs and Outputs
+<!-- Taken from the default rmarkdown shiny document text -->
+You can embed Shiny inputs and outputs in your document. Outputs are automatically updated whenever inputs change.  This demonstrates how a standard R plot can be made interactive by wrapping it in the Shiny `renderPlot` function. The `selectInput` and `sliderInput` functions create the input widgets used to drive the plot.
+
+## Widgets
+Interactivity comes from widgets.  You can find a list of Shiny widgets here:
+http://shiny.rstudio.com/gallery/widget-gallery.html
+
+- `actionButton` - Action Button
+- `checkboxGroupInput` - A group of check boxes
+- `checkboxInput` - A single check box
+- `dateInput` - A calendar to aid date selection
+- `dateRangeInput` - A pair of calendars for selecting a date range
+- `fileInput` - A file upload control wizard
+- `helpText` - Help text that can be added to an input form
+- `numericInput` - A field to enter numbers
+- `radioButtons` - A set of radio buttons
+- `selectInput` - A box with choices to select from
+- `sliderInput` - A slider bar
+- `submitButton` - A submit button
+- `textInput` - A field to enter text
+
+## Inputs
+### Basics
+creating an interactive panel where the user can bass in variables to manipulate a plot
+
+we use the `inputPanel` function from shiny
+
+```{r}
+inputPanel(
+checkboxGroupInput("checkGroup", label = "Checkbox group", 
+    choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3),
+    selected = 1)
+)
+```
+
+it takes a series of widgets (functions) separated by comma
+
+```{r}
+inputPanel(
+checkboxGroupInput("checkGroup", label = "Checkbox group", 
+    choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3),
+    selected = 1),
+radioButtons("radio", label = ("Radio buttons"),
+    choices = list("Choice 1" = 1, "Choice 2" = 2, "Choice 3" = 3), 
+    selected = 1),
+checkboxInput("checkbox", label = "Choice A", value = TRUE)
+)
+```
+
+* * *
+
+### Ebola Inputs
+```{r, echo=FALSE}
+all <- unique(data_plot$place)
+c_colors <- brewer.pal(length(all), 'Set1')
+names(c_colors) <- all
+
+g <- ggplot(data = data_plot,
+            aes(x = day, y = count,
+                color = place)) +
+    geom_point() +
+    geom_line() +
+    facet_grid(~ type) +
+    scale_x_continuous(name = "Days rom index") +
+    scale_y_continuous(name = "Counts") +
+    scale_colour_manual(name = "Country", values = c_colors) +
+    ggtitle("Number of observations for days after first report") +
+    theme_bw()
+g
+```
+
+```{r}
+# clt+i in rstudio will auto indent your code
+# REALLY useful expecially when working in shiny
+inputPanel(
+    checkboxGroupInput(inputId = "checkGroup_countries",
+                       label = "Countries",
+                       choices = list("Guinea" = "Guinea", "Liberia" = "Liberia",
+                                      "SierraLeone" = "SierraLeone", "Nigeria" = "Nigeria",
+                                      "Senegal" = "Senegal", "UnitedStates" = "UnitedStates",
+                                      "Spain" = "Spain", "Mali" = "Mali")
+    ),
+    radioButtons("radio_date", label = ("Date range"),
+                 choices = list("Relative" = 1, "Absolute" = 2), 
+                 selected = 1),
+    checkboxInput("checkbox_log_y", label = "Plot y-axis on log scale", value = FALSE)
+)
+```
+
+```{r, echo=FALSE}
+print(sprintf('class of the input variable: %s', class(input)))
+
+# renderPrint(expr, env = parent.frame(), quoted = FALSE, func = NULL, width = getOption("width"))
+
+# use renderPrint to show how the variables change when you click things
+renderPrint(
+    input$checkGroup_countries
+)
+
+renderPrint(
+    input$radio_date
+)
+
+renderPrint(
+    input$checkbox_log_y
+)
+```
+
+```{r, echo=FALSE}
+# renderPlot(expr, width = "auto", height = "auto", res = 72, ..., env = parent.frame(), quoted = FALSE, func = NULL)
+
+# renderPlot to render the ggplot object
+# note the expr parameter, for multiple expressions you use the { } brackets
+renderPlot({
+    # create selected_countries variable that reacts to checkGroup_countries
+    if(is.null(input$checkGroup_countries)){
+        selected_countries <- unique(data_plot$place)
+    } else{
+        selected_countries <- input$checkGroup_countries
+    }
+
+    g <- ggplot(data = data_plot[data_plot$place %in% selected_countries, ],
+                aes(x = day, y = count,
+                    color = place)) +
+        geom_point() +
+        geom_line() +
+        facet_grid(~ type) +
+        scale_x_continuous(name = "Days rom index") +
+        scale_y_continuous(name = "Counts") +
+        scale_colour_manual(name = "Country", values = c_colors) +
+        ggtitle("Number of observations for days after first report")
+
+    # change y-axis 
+    if(!input$checkbox_log_y){
+        return(g)
+    } else{
+        h <- g + scale_y_log10() +
+            scale_y_log10(name = "Counts") +
+            ggtitle("Number of observations for days after first report (log10 scale)")
+      return(h)
+    }
+})
+```
+
+    renderPlot({
+        # create selected_countries variable that reacts to checkGroup_countries
+        if(is.null(input$checkGroup_countries)){
+            selected_countries <- unique(data_plot$place)
+        } else{
+            selected_countries <- input$checkGroup_countries
+        }    
+
+        g <- ggplot(data = data_plot[data_plot$place %in% selected_countries, ],
+                    aes(x = day, y = count,
+                        color = place)) +
+            geom_point() +
+            geom_line() +
+            facet_grid(~ type) +
+            scale_x_continuous(name = "Days rom index") +
+            scale_y_continuous(name = "Counts") +
+            scale_colour_manual(name = "Country", values = c_colors) +
+            ggtitle("Number of observations for days after first report")    
+
+        # change y-axis 
+        if(!input$checkbox_log_y){
+            return(g)
+        } else{
+            h <- g + scale_y_log10() +
+                scale_y_log10(name = "Counts") +
+                ggtitle("Number of observations for days after first report (log10 scale)")
+          return(h)
+        }
+    })
+
+* * *
+
+# Shiny Application Notes
+You can find the cheatsheet for Shiny here: http://shiny.rstudio.com/articles/cheatsheet.html
+
+I've added the unzipped pdf into the github repo just for completeness sake.
+It the version in this repo is not guarenteed to be up to date.
+
+# Embedded Application
+<!-- Taken from the default rmarkdown shiny document text -->
+It's also possible to embed an entire Shiny application within an R Markdown document using the `shinyAppDir` function. This example embeds a Shiny application located in another directory:
+
+```{r, echo=TRUE}
+shinyAppDir(
+  system.file("examples/06_tabsets", package="shiny"),
+  options=list(
+    width="100%", height=550
+  )
+)
+```
+
+Note the use of the `height` parameter to determine how much vertical space the embedded application should occupy.
+
+You can also use the `shinyApp` function to define an application inline rather then in an external directory.
+
+In all of R code chunks above the `echo = FALSE` attribute is used. This is to prevent the R code within the chunk from rendering in the document alongside the Shiny components.
+
+
+

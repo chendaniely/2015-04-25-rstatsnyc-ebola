@@ -1,0 +1,88 @@
+---
+title: "Knitr primer"
+author: "Daniel Chen"
+date: "April 25, 2015"
+output: html_document
+---
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+With markdown we can do some pretty cool stuff like create headers
+
+# h1
+## h2
+### h3
+#### h4
+##### h5
+###### h6
+####### h7
+
+# Basic markdown
+## Lists
+### Unordered lists
+bullet points:
+
+- bullet 1
+- bullet 2
+- bullet 3
+
+### Ordered lists
+and ordered lists
+
+1. item 1
+2. item 2
+3. item 3
+
+Numbered lists do not need to be ordered corretly, or at all
+
+1. item 1
+1. item 2
+1. item 3
+
+You can also nest things
+
+- bullet 1
+    - bullet 1.1
+        - bullet 1.1.1
+- bullet 2
+
+1. item 1
+    1. item 1.1
+        1. item 1.1.1
+1. item 2
+
+# Literate programming
+
+```{r}
+# a typical chunk I have at the very top
+library(knitr)
+opts_chunk$set(cache = FALSE, dpi = 300)
+opts_chunk$set(comment = "", tidy = TRUE, size = "small")
+opts_chunk$set(fig.width = 10, fig.height = 6)
+opts_chunk$set(fig.path = 'Figs/')
+opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+summary(cars)
+```
+
+You can also embed plots, for example:
+
+```{r, echo=FALSE}
+plot(cars)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+But that's not all!
+
+
+```{r, echo=TRUE}
+# how to knit the document outside Rstudio
+# very common when a markdown document is part of a pipline
+```
+
+`rmarkdown::render('01-knitr_primer.Rmd', output_file='new_output_file', output_dir = 'new_output_dir')`

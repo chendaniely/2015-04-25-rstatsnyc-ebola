@@ -1,0 +1,14 @@
+base
+methods
+datasets
+utils
+grDevices
+graphics
+stats
+bitops
+RCurl
+reshape2
+magrittr
+dplyr
+RColorBrewer
+ggplot2
