@@ -19,14 +19,10 @@ library(shiny)
 library(foreign)
 library(RColorBrewer)
 
-# url <- "https://raw.githubusercontent.com/cmrivers/ebola/master/country_timeseries.csv"
-#
-# data <- getURL(url, ssl.verifypeer = FALSE)
-# df <- read.csv(textConnection(data))
+url <- "https://raw.githubusercontent.com/cmrivers/ebola/master/country_timeseries.csv"
 
-# I hard coded this
-df <- read.csv('/home/dchen/git/2015-04-25-rstatsnyc-ebola/data/country_timeseries.csv', stringsAsFactors = FALSE)
-
+data <- getURL(url, ssl.verifypeer = FALSE)
+df <- read.csv(textConnection(data))
 #Drop the Date col
 df <- df[, !names(df) %in% c("Date")]
 
@@ -52,7 +48,6 @@ names(c_colors) <- all
 
 theme_set(theme_minimal())
 
-
 shinyServer(function(input, output) {
     ###########################################################################
     #
@@ -66,24 +61,15 @@ shinyServer(function(input, output) {
         # that is mapped to an output
         #
         ###########################################################################
-
-        # copy the df so the name is same as before
         df_plot <- long
-
-        # get list of countries from checkbox
         selection <- input$countries
         if("All" %in% input$countries || length(input$countries) == 0){
-            # if nothing is selected, select all countries
             selection <- all
         }else{
             selection <- input$countries
         }
-        # subset data based on selection
-        df_plot <- df_plot %>%
+        df_plot %>%
             filter(place %in% selection)
-
-        df_plot <- df_plot[df_plot$absolute.days %in% seq(input$time_range[1],
-                                                          input$time_range[2]), ]
     })
 
     output$countriesList <- renderUI({
@@ -91,13 +77,6 @@ shinyServer(function(input, output) {
                            label = h3("Countries to display"),
                            choices = all,
                            selected = "All")
-    })
-
-    output$time_range <- renderUI({
-        sliderInput("time_range", label = "Subset 'time'",
-                    min = min(df_plot$absolute.days, na.rm = TRUE),
-                    max = max(df_plot$absolute.days, na.rm = TRUE),
-                    value = c(min, max))
     })
 
     plot <- reactive({
@@ -110,7 +89,7 @@ shinyServer(function(input, output) {
             scale_x_continuous(name = "Days after first report") +
             scale_y_continuous(name = "Counts") +
             scale_colour_manual(name = "Country", values = c_colors) +
-            ggtitle("Numbetime_ranger of observations for days after first report")
+            ggtitle("Number of observations for days after first report")
 
         if(!input$log){
             return(g)
