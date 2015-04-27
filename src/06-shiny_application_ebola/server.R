@@ -127,9 +127,11 @@ shinyServer(function(input, output) {
             scale_colour_manual(name = "Country", values = c_colors) +
             ggtitle("Numbetime_ranger of observations for days after first report")
 
+        # if the log is not checked off, return the plot as is
         if(!input$log){
             return(g)
         } else{
+            # otherwise make the y axis on log scale
             h <- g + scale_y_continuous(trans = log10_trans()) +
                 scale_y_log10(name = "Counts") +
                 ggtitle("Number of observations for days after first report (log10 scale)")
