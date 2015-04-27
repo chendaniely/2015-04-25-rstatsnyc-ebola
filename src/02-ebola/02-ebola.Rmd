@@ -19,12 +19,20 @@ library(ggplot2)
 ## The data
 Case counts and deaths is from the World Health Organization and WHO situation reports
 ```{r, cache=TRUE}
+# the below commented lines pulls the data into a dataframe named 'df'
+# directly from Caitlin's github repository
+# I did this in the intial ebola plot becuase the repositiory was constantly being
+# updated.  This way the ebola plot would always be up-to-date.
+
 # url <- "https://raw.githubusercontent.com/cmrivers/ebola/master/country_timeseries.csv"
 # 
 # data <- getURL(url, ssl.verifypeer = FALSE)
 # df <- read.csv(textConnection(data))
 
-df <- read.csv('../data/country_timeseries.csv',
+
+
+# here I am reading the dataframe as a csv just incase I didn't have internet
+df <- read.csv('../../data/country_timeseries.csv',
                stringsAsFactors = FALSE)    
 names(df)
 ```
@@ -129,7 +137,7 @@ data_plot <- df_plot
 
 ## Data for plotting
 ```{r}
-save(data_plot, file = '../data/ebola_data.Rdata')
+save(data_plot, file = '../../data/ebola_data.Rdata')
 head(data_plot)
 tail(data_plot)
 ```
