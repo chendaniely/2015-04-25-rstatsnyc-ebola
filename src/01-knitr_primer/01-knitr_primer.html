@@ -149,6 +149,11 @@ library(knitr)
 opts_chunk$set(cache = FALSE, dpi = 300)
 opts_chunk$set(comment = &quot;&quot;, tidy = TRUE, size = &quot;small&quot;)
 opts_chunk$set(fig.width = 10, fig.height = 6)
+
+# using the fig.path option below will put all figures generated
+# in this document into a spefified folder.  If you run this document
+# you will notice a new folder called 'Figs' created and the
+# cars scatter plot will be in it
 opts_chunk$set(fig.path = 'Figs/')
 opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)</code></pre>
 <p>When you click the <strong>Knit</strong> button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:</p>
