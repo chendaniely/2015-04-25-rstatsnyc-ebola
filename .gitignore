@@ -11,3 +11,9 @@
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
+/src/01-knitr_primer/Figs/unnamed-chunk-3-1.png
+/src/02-ebola/02-ebola_cache/html/__packages
+/src/02-ebola/02-ebola_cache/html/unnamed-chunk-2_15af2784e931f7ac25b702a31d399f31.RData
+/src/02-ebola/02-ebola_cache/html/unnamed-chunk-2_15af2784e931f7ac25b702a31d399f31.rdb
+/src/02-ebola/02-ebola_cache/html/unnamed-chunk-2_15af2784e931f7ac25b702a31d399f31.rdx
+/src/02-ebola/02-ebola_files/figure-html/unnamed-chunk-13-1.png
