@@ -7,7 +7,7 @@ This is my presentation for the inaugural [NYC R Conference](http://www.rstats.n
 Ebola dataset and images were taken from Caitlin Rivers' repo: https://github.com/cmrivers/ebola
 
 Checkout the awesome rstudio shiny [tutorial](http://shiny.rstudio.com/tutorial/) afterwards!
-There is a [gallery](http://shiny.rstudio.com/articles/) with a bunch of example code, and (artiles)[http://shiny.rstudio.com/articles/] to bring your shiny app to the next level.
+There is a [gallery](http://shiny.rstudio.com/gallery/) with a bunch of example code, and [artiles](http://shiny.rstudio.com/articles/) to bring your shiny app to the next level.
 
 Hope this gets everyone started in the right direction!
 
