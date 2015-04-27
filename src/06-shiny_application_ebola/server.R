@@ -47,6 +47,11 @@ long <- long %>%
     mutate(relative.days = absolute.days - min(absolute.days)) %>%
     mutate(count = as.numeric(count))
 
+# variables for the sliders to subset the x-axis
+min_x <- min(long$absolute.days, na.rm = TRUE)
+max_x <- max(long$absolute.days, na.rm = TRUE)
+
+
 # this block of code is here to account for new countries being added to the data
 # and automatically setting a fixed color to the countries
 # before, depending on which countries you selected, the color would change,
