@@ -111,14 +111,16 @@ shinyServer(function(input, output) {
     })
 
     output$time_range <- renderUI({
-        sliderInput("time_range", label = "Subset 'time'",
-                    min = min(df_plot$absolute.days, na.rm = TRUE),
-                    max = max(df_plot$absolute.days, na.rm = TRUE),
-                    value = c(min, max))
+        sliderInput("time_range",
+                    label = "Subset 'time'",
+                    min = min_x,
+                    max = max_x,
+                    value = c(min_x, max_x))
     })
 
     plot <- reactive({
         type = paste0(input$date_offset, ".days")
+
         g <- ggplot(data = data_plot(),
                     aes_string(x = type, y = "count",
                                group = "place", color = "place")) +
