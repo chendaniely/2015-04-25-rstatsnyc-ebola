@@ -13,7 +13,7 @@ opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 # this Rdata file was created from the 02-ebola.Rmd file
 # this is here so I don't have to have all the data cleaning steps again
-load('../data/ebola_data.Rdata')
+load('../../data/ebola_data.Rdata')
 ```
 
 <!-- Taken from the default rmarkdown shiny document text -->
