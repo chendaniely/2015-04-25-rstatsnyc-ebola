@@ -57,7 +57,8 @@ checkboxGroupInput("checkGroup", label = "Checkbox group",
 )
 ```
 
-it takes a series of widgets (functions) separated by comma
+it takes a series of widgets (functions) separated by comma.  Note, we only
+created a panel.  Nothing is tied to data/plots... yet
 
 ```{r}
 inputPanel(
@@ -75,6 +76,7 @@ checkboxInput("checkbox", label = "Choice A", value = TRUE)
 
 ### Ebola Inputs
 ```{r, echo=FALSE}
+# original ebola plot for reference
 all <- unique(data_plot$place)
 c_colors <- brewer.pal(length(all), 'Set1')
 names(c_colors) <- all
@@ -110,6 +112,12 @@ inputPanel(
     checkboxInput("checkbox_log_y", label = "Plot y-axis on log scale", value = FALSE)
 )
 ```
+use renderPrint to show how the variables change when you click things
+note we get stuff out of the input panels by calling the widget label we assigned
+from the `input` variable
+here I use render print to print out the value from the widgets
+
+Note the class of the input variable.
 
 ```{r, echo=FALSE}
 print(sprintf('class of the input variable: %s', class(input)))
