@@ -46,6 +46,10 @@ long <- long %>%
     mutate(relative.days = absolute.days - min(absolute.days)) %>%
     mutate(count = as.numeric(count))
 
+# this block of code is here to account for new countries being added to the data
+# and automatically setting a fixed color to the countries
+# before, depending on which countries you selected, the color would change,
+# which makes comparisons difficult
 all <- unique(long$place)
 c_colors <- brewer.pal(length(all), 'Set1')
 names(c_colors) <- all
