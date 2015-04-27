@@ -13,7 +13,7 @@ Hope this gets everyone started in the right direction!
 
 # Topics In this repository
 
-1. [Knitr](http://yihui.name/knitr/) primer
+1. [Knitr](http://yihui.name/knitr/) and [rmarkdown](http://rmarkdown.rstudio.com/) primer
 2. Basic [ebola](https://github.com/chendaniely/ebola/tree/dev-dan-shiny/data_products/shinyCountryTimeseries) plot
 3. Interactive Shiny (did not cover this due to time) [documents](http://rmarkdown.rstudio.com/authoring_shiny.html)
 4. Interactive Shiny [app](http://shiny.rstudio.com/)
