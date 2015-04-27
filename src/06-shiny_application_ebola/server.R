@@ -75,12 +75,12 @@ shinyServer(function(input, output) {
 
 
     data_plot <- reactive({
-        ###########################################################################
+        #######################################################################
         #
         # Any render and ractive call will run when there is a change to a widget
         # that is mapped to an output
         #
-        ###########################################################################
+        ########################################################################
 
         # copy the df so the name is same as before
         df_plot <- long
