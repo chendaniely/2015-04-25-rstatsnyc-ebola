@@ -25,7 +25,8 @@ library(RColorBrewer)
 # df <- read.csv(textConnection(data))
 
 # I hard coded this
-df <- read.csv('/home/dchen/git/2015-04-25-rstatsnyc-ebola/data/country_timeseries.csv', stringsAsFactors = FALSE)
+df <- read.csv('/home/dchen/git/2015-04-25-rstatsnyc-ebola/data/country_timeseries.csv',
+               stringsAsFactors = FALSE)
 
 #Drop the Date col
 df <- df[, !names(df) %in% c("Date")]
