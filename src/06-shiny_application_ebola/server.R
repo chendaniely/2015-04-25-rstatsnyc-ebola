@@ -97,8 +97,10 @@ shinyServer(function(input, output) {
         df_plot <- df_plot %>%
             filter(place %in% selection)
 
-        df_plot <- df_plot[df_plot$absolute.days %in% seq(input$time_range[1],
-                                                          input$time_range[2]), ]
+        plot_x_subset_values <- seq(from = input$time_range[1],
+                                    to = input$time_range[2])
+
+        df_plot <- df_plot[df_plot$relative.days %in% plot_x_subset_values, ]
     })
 
     output$countriesList <- renderUI({
