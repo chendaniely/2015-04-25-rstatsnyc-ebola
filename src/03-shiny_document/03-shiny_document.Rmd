@@ -122,9 +122,6 @@ Note the class of the input variable.
 ```{r, echo=FALSE}
 print(sprintf('class of the input variable: %s', class(input)))
 
-# renderPrint(expr, env = parent.frame(), quoted = FALSE, func = NULL, width = getOption("width"))
-
-# use renderPrint to show how the variables change when you click things
 renderPrint(
     input$checkGroup_countries
 )
