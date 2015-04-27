@@ -24,11 +24,9 @@ There are 2 ways you can get the files
 1. If you know your way around github you can clone this repository.
 2. You can click the "Download Zip" button to the right and unzip all the files on to your computer.
 
-The Material used for the lesson are in the `lessons` folder.  They are numbered so you can go through them the exact same way I did during the talk.
+The Material used for the talk are in the `src` folder.  They are numbered so you can go through them the exact same way I did during the talk.
 
 # How to view/render the files
-
-All files are under the `src` directory, and the subfolders are numbered numerically.
 
 To render or run everything: The simplest way is to open the `.Rmd` files and click `knit html` and have the presentation and rmarkdown documents render for you.
 If you want to run the shiny app.  You have to open the `ui.R` and `server.R` files in rstudio, then you will have a `run app` button to click.
