@@ -1,0 +1,286 @@
+---
+title: "Interactive Ebola Plots"
+author: "Daniel Chen"
+date: "April 25, 2015"
+output: ioslides_presentation
+---
+
+# Hello!
+
+## I'm Daniel
+
+  - Ph.D. candidate in [Genetics, Bioinformatics, and Computational Biology](http://gbcb.vbi.vt.edu/gbcb/about_program) at Virginia Tech
+  - Work in the [Social and Decison Analytics Lab](http://vbi.vt.edu/sdal/about) in the [Virginia Bioinformatics Institude](http://www.vbi.vt.edu/about)
+  - MPH in Epidemiology at [Mailman](http://www.mailman.columbia.edu/)
+  - [Software-Carpentry](http://software-carpentry.org/) Instructor
+  - [Lander Analytics](http://www.landeranalytics.com/)
+  - Predictive Health Analytics
+
+## Today
+1. [Knitr](http://yihui.name/knitr/) primer
+2. Basic [ebola](https://github.com/chendaniely/ebola/tree/dev-dan-shiny/data_products/shinyCountryTimeseries) plot
+3. Interactive Shiny [documents](http://rmarkdown.rstudio.com/authoring_shiny.html)
+4. Interactive Shiny [app](http://shiny.rstudio.com/)
+
+https://github.com/chendaniely/2015-04-25-rstatsnyc-ebola
+
+<img src="../images/vivian_auudience.png" style="height:200px;"/>
+
+## Thanks Vivian for the previous image
+http://vivianpeng.com/Talk/storyviz.html
+
+## Ebola data
+https://github.com/cmrivers/ebola
+
+- countryTimeSeries
+
+# Knitr Demo
+
+## Knitr Rmd Document
+https://github.com/chendaniely/2015-04-25-rstatsnyc-ebola/blob/master/src/01-knitr_primer/01-knitr_primer.Rmd
+
+- Click the 'raw' button to see the code
+- This is the unrendered version, so you won't see the R output
+
+# Ebola Data
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(RCurl)
+library(reshape2)
+library(magrittr)
+library(dplyr)
+library(RColorBrewer)
+library(ggplot2)
+```
+
+## The data
+Case counts and deaths is from the World Health Organization and WHO situation reports
+
+## Load data
+```{r, cache=TRUE}
+# the below commented lines pulls the data into a dataframe named 'df'
+# directly from Caitlin's github repository
+# I did this in the intial ebola plot becuase the repositiory was constantly being
+# updated.  This way the ebola plot would always be up-to-date.
+
+# url <- "https://raw.githubusercontent.com/cmrivers/ebola/master/country_timeseries.csv"
+# 
+# data <- getURL(url, ssl.verifypeer = FALSE)
+# df <- read.csv(textConnection(data))
+```
+
+## Load data
+```{r}
+# here I am reading the dataframe as a csv just incase I didn't have internet
+df <- read.csv('../data/country_timeseries.csv',
+               stringsAsFactors = FALSE)    
+names(df)
+```
+
+
+## The data
+look at the latest 2 days of cases
+```{r}
+# There's a transpose here so it will fit on the slide :)
+latest <- head(df, n = 2) %>% t() %>% as.data.frame()
+pattern = '^Date|^Day|^Cases'
+rows = grep(pattern = pattern, x = row.names(latest))
+latest[rows, ]
+```
+
+## The data
+<img src="../images/epicurves.png" alt="epicurves from cmrivers repo" style="height:550px;"/>
+
+## Data munging
+```{r}
+# drop the date
+df1_noDate <- df[, !names(df) %in% c("Date")]
+```
+
+```{r}
+# Shift dates so they are all relative to eachother
+# Build a series from 0...latest day in data set
+day <- c(0:max(df1_noDate$Day))
+# We'll add updates on each day we have data for each country here
+df3_merge <- data.frame(day)
+```
+
+## Data munging
+```{r}
+# For each country:
+for(country in 2:ncol(df1_noDate)){
+  df_temp <- df1_noDate[, c(1, country)]
+  # Data set is snapshots at day of reporting, 
+  # with NAs representing "no change"/"no new data"
+  # so ignore those with NAs.
+  df_temp <- na.omit(df_temp)
+
+  #Rescale all series so day 0 == first reported case/death
+  df_temp$day.adj <- df_temp$Day - min(df_temp$Day)
+
+  df3_merge <- merge(x = df3_merge, 
+                     y = df_temp[, names(df_temp) != "Day"],
+                     by.x = "day", by.y = "day.adj", all.x = TRUE)
+}
+```
+
+## Data munging
+```{r}
+# assign day to row.names
+row.names(df3_merge) <- df3_merge$day
+# drop 'day'
+df3_merge <- df3_merge[, names(df3_merge) != "day"]
+head(df3_merge, n = 1)
+```
+
+## Data munging
+```{r}
+# transpose
+df4 <- as.data.frame(t(as.matrix(df3_merge)))
+head(df4[, c(1:10)])
+```
+
+```{r}
+# split row names to get cases/deaths count and country
+vars <- colsplit(row.names(df4), "_", c("type", "place"))
+df4 <- cbind(vars, df4)
+row.names(df4) <- NULL
+```
+
+## Data munging
+```{r]}
+df5_melt <- melt(df4)
+names(df5_melt) <- c("type", "place", "day", "count")
+df5_melt$type[df5_melt$type == "Case"] <- "Cases"
+head(df5_melt)
+```
+
+## Variables for plotting
+```{r}
+# assign countries to a color value
+all <- unique(df5_melt$place)
+c_colors <- brewer.pal(length(all), 'Set1')
+names(c_colors) <- all
+
+theme_set(theme_minimal())
+
+# drop NA observations for plotting
+df_plot <- df5_melt[!is.na(df5_melt$count), ]
+
+# ability to subset by country/countries
+selection <- all
+df_plot <- df_plot %>% 
+    filter(place %in% selection) %>%
+    mutate(count = as.numeric(count), day=as.numeric(day))
+
+data_plot <- df_plot
+```
+
+## Data for plotting
+```{r}
+save(data_plot, file = '../data/ebola_data.Rdata')
+head(data_plot)
+tail(data_plot)
+```
+
+
+## Initial Plot
+```{r}
+g <- ggplot(data = data_plot,
+            aes(x = day, y = count,
+                color = place)) +
+    geom_point() +
+    geom_line()+
+    facet_grid(~ type) +
+    scale_x_continuous(name="Days rom index") +
+    scale_y_continuous(name="Counts") +
+    scale_colour_manual(name="Country", values=c_colors) +
+    ggtitle("Number of observations for days after first report")
+```
+
+## Plot
+```{r}
+g
+```
+
+
+
+## Deployed Application
+
+https://chendaniely.shinyapps.io/shinyCountryTimeseries
+
+<img src="../images/deployed_ebola_screenshotpng.png" style="width:800px;"/>
+
+## The repositories
+
+This is all possible beacause of [Caitlin](http://www.caitlinrivers.com/) [Rivers](https://twitter.com/cmyeaton) and all the [contributors](https://github.com/cmrivers/ebola/graphs/contributors) (29 as of 2015-04-14) to the [repository](https://github.com/cmrivers/ebola)
+
+    - Computational epidemiology
+    - Network Dynamics and Simulation Science Laboratory (NDSSL) 
+        - Virginia Bioinformatics Institute, Virginia Tech
+
+My [fork](https://github.com/chendaniely/ebola) is the staging area for the shiny application
+
+## Shiny contributors
+- Timothée Poisot [tpoisot](https://github.com/tpoisot)
+    - Québec Centre for Biodiversity Science, Rimouski, Québec, Canada
+- Mathew Hall [mathew-hall](https://github.com/mathew-hall/)
+    - Sheffield, England
+- Ryan Quan [rcquan](https://github.com/rcquan/)
+    - Columbia University Mailman School of Public Health, New York NY 
+
+# Shiny
+
+## Shiny Document
+https://github.com/chendaniely/2015-04-25-rstatsnyc-ebola/blob/master/src/03-shiny_document/03-shiny_document.Rmd
+
+- Note how sliders are added using `inputPanel`
+
+## Shiny App UI
+
+https://github.com/chendaniely/2015-04-25-rstatsnyc-ebola/tree/master/src/04-shiny_application
+
+- Get a basic plot working
+- Build a UI
+- *Then* link the two
+
+## Shiny App -- Simple
+https://github.com/chendaniely/2015-04-25-rstatsnyc-ebola/tree/master/src/05-shiny_application_simple
+
+
+## Shiny App -- Ebola
+https://github.com/chendaniely/2015-04-25-rstatsnyc-ebola/tree/master/src/06-shiny_application_ebola
+
+# Conclusion
+
+## Additional Resources
+
+- http://shiny.rstudio.com/
+- http://shiny.rstudio.com/tutorial/
+- http://shiny.rstudio.com/articles/
+    - http://shiny.rstudio.com/articles/html-ui.html
+- http://shiny.rstudio.com/gallery/
+- http://rstudio.github.io/shinydashboard/
+
+## Shoutouts!
+My Data Science Instructors:
+
+- [Rachel Schutt](https://www.linkedin.com/in/rachelschutt)
+- [Kayur](http://kayur.org/) [Patel](https://twitter.com/foil)
+- [Jared](http://www.jaredlander.com/) [Lander](https://twitter.com/jaredlander)
+
+Data:
+
+- [Caitlin](http://www.caitlinrivers.com/) [Rivers](https://twitter.com/cmyeaton)
+
+SDAL: <img src="../images/sdal.png" style="height:80px;"/>
+
+Sallie Keller, Stephanie Shipp, Ana Aizcorbe, Dave Higdon, Mark Orr, Aaron Schroeder,
+Gizem Korkmaz, Kathryn Ziemer, Bianica Pires, Emily Molfino, Kimberly Lyman, Sakinah Calender
+
+## Parents
+
+## Thanks!
+
+[\@chendaniely](https://twitter.com/chendaniely)
+
